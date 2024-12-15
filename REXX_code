@@ -1,0 +1,118 @@
+/*REXX*/                                                                
+DTIME = SUBSTR(DATE('S'),5)                                             
+I=0                                                                     
+QUEUE "//BACKDST JOB MSGLEVEL=(1,1),REGION=0M,CLASS=A               "   
+QUEUE "//***********************************************************"   
+QUEUE "//*            STEP01: DELETE BACKUP HLQ=BKUP41             *"   
+QUEUE "//***********************************************************"   
+QUEUE "//DELDS1    EXEC PGM=ADRDSSU,REGION=0M"                          
+QUEUE "//SYSPRINT  DD   SYSOUT=*"                                       
+QUEUE "//DELETE    DD   DUMMY"                                          
+QUEUE "//SYSIN     DD   *"                                              
+QUEUE "  DUMP DATASET(INCLUDE(BKUP41.**) -"                             
+QUEUE "    BY((CREDT,LT,*,-6))) - "                                     
+QUEUE "    OUTDD(DELETE) DELETE "                                                                            
+/*        STEP01: BACKUP DBA FILES HLQ */                               
+"ISPEXEC LMDINIT LISTID(IDV) LEVEL(DBA)"                                
+DO FOREVER                                                              
+I=I+1                                                                  
+   "ISPEXEC LMDLIST LISTID("IDV") OPTION(LIST) DATASET(DSVAR)"         
+   IF RC = 0 THEN DO                                                   
+QUEUE "//***********************************************************"  
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                
+QUEUE "//SYSPRINT DD SYSOUT=*"                                         
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                         
+QUEUE "//SYSTSIN    DD *"                                              
+QUEUE "  XMIT A.A DSN('"DSVAR"') -"                                    
+QUEUE "  OUTDSN('BKUP41."DSVAR".T"DTIME"') NOLOG"                            
+END                                                                    
+   ELSE LEAVE                                                          
+END                                                                    
+"ISPEXEC LMDLIST LISTID("IDV") OPTION(FREE)"                           
+/*        STEP02: BACKUP SP FILES HLQ */                               
+"ISPEXEC LMDINIT LISTID(IDV1) LEVEL(SP)"                               
+DO FOREVER                                                             
+I=I+1                                                                  
+   "ISPEXEC LMDLIST LISTID("IDV1") OPTION(LIST) DATASET(DSVAR1)"       
+   IF RC = 0 THEN DO                                                   
+QUEUE "//***********************************************************"  
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                
+QUEUE "//SYSPRINT DD SYSOUT=*"                                         
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                         
+QUEUE "//SYSTSIN    DD *"                                              
+QUEUE "  XMIT A.A DSN('"DSVAR1"') -"                                   
+QUEUE "  OUTDSN('BKUP41."DSVAR1".T"DTIME"') NOLOG"                           
+END                                                                     
+   ELSE LEAVE                                                           
+END                                                                     
+"ISPEXEC LMDLIST LISTID("IDV1") OPTION(FREE)"                           
+/*        STEP03: BACKUP INST1 FILES HLQ */                              
+"ISPEXEC LMDINIT LISTID(IDV2) LEVEL(INST1)"                              
+DO FOREVER                                                              
+I=I+1                                                                   
+   "ISPEXEC LMDLIST LISTID("IDV2") OPTION(LIST) DATASET(DSVAR2)"        
+   IF RC = 0 THEN DO                                                    
+QUEUE "//***********************************************************"   
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                 
+QUEUE "//SYSPRINT DD SYSOUT=*"                                          
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                          
+QUEUE "//SYSTSIN    DD *"                                               
+QUEUE "  XMIT A.A DSN('"DSVAR2"') -"                                    
+QUEUE "  OUTDSN('BKUP41."DSVAR2".T"DTIME"') NOLOG"                            
+END                                                                     
+   ELSE LEAVE                                                           
+END                                                                     
+"ISPEXEC LMDLIST LISTID("IDV2") OPTION(FREE)"                           
+/*        STEP04: BACKUP INST2 FILES HLQ */                              
+"ISPEXEC LMDINIT LISTID(IDV3) LEVEL(INST2)"                              
+DO FOREVER                                                              
+I=I+1                                                                   
+   "ISPEXEC LMDLIST LISTID("IDV3") OPTION(LIST) DATASET(DSVAR3)"        
+   IF RC = 0 THEN DO                                                    
+QUEUE "//***********************************************************"   
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                 
+QUEUE "//SYSPRINT DD SYSOUT=*"                                          
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                          
+QUEUE "//SYSTSIN    DD *"                                               
+QUEUE "  XMIT A.A DSN('"DSVAR3"') -"                                    
+QUEUE "  OUTDSN('BKUP41."DSVAR3".T"DTIME"') NOLOG"                            
+END                                                                     
+   ELSE LEAVE                                                           
+END                                                                     
+"ISPEXEC LMDLIST LISTID("IDV3") OPTION(FREE)"                           
+/*        STEP05: BACKUP INST3 FILES HLQ */                              
+"ISPEXEC LMDINIT LISTID(IDV2) LEVEL(INST3)"                              
+DO FOREVER                                                              
+I=I+1                                                                   
+   "ISPEXEC LMDLIST LISTID("IDV4") OPTION(LIST) DATASET(DSVAR4)"        
+   IF RC = 0 THEN DO                                                    
+QUEUE "//***********************************************************"   
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                 
+QUEUE "//SYSPRINT DD SYSOUT=*"                                          
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                          
+QUEUE "//SYSTSIN    DD *"                                               
+QUEUE "  XMIT A.A DSN('"DSVAR4"') -"                                    
+QUEUE "  OUTDSN('BKUP41."DSVAR4".T"DTIME"') NOLOG"                            
+END                                                                     
+   ELSE LEAVE                                                           
+END                                                                     
+"ISPEXEC LMDLIST LISTID("IDV4") OPTION(FREE)"                           
+/*        STEP06: BACKUP INST4 FILES HLQ */                              
+"ISPEXEC LMDINIT LISTID(IDV5) LEVEL(TST4)"                              
+DO FOREVER                                                              
+I=I+1                                                                   
+   "ISPEXEC LMDLIST LISTID("IDV5") OPTION(LIST) DATASET(DSVAR5)"        
+   IF RC = 0 THEN DO                                                    
+QUEUE "//***********************************************************"   
+QUEUE "//STEP"I"  EXEC PGM=IKJEFT01,COND=(5,LE,DELDS1)"                 
+QUEUE "//SYSPRINT DD SYSOUT=*"                                          
+QUEUE "//SYSTSPRT DD SYSOUT=*"                                          
+QUEUE "//SYSTSIN    DD *"                                               
+QUEUE "  XMIT A.A DSN('"DSVAR5"') -"                                    
+QUEUE "  OUTDSN('BKUP41."DSVAR5".T"DTIME"') NOLOG"                            
+END                                                                     
+   ELSE LEAVE                                                           
+END                                                                     
+      ADDRESS TSO                                                       
+QUEUE "XX";"SUBMIT * END(XX)";                                          
+"ISPEXEC LMDLIST LISTID("IDV5") OPTION(FREE)"                           
