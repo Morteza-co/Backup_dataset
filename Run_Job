@@ -1,0 +1,13 @@
+//BACKUP  JOB MSGLEVEL=(1,1),REGION=0M,CLASS=A,NOTIFY=&SYSUID
+//STEP1    EXEC PGM=IKJEFT1B                                 
+//SYSEXEC  DD DISP=SHR,DSN=USER.JOBS                     
+//ISPLLIB  DD DISP=SHR,DSN=ISP.SISPLOAD                       
+//ISPPLIB  DD DISP=SHR,DSN=ISP.SISPPENU                       
+//ISPSLIB  DD DISP=SHR,DSN=ISP.SISPSLIB                       
+//ISPTLIB  DD DISP=SHR,DSN=ISP.SISPTENU                       
+//ISPMLIB  DD DISP=SHR,DSN=ISP.SISPMENU                       
+//ISPPROF  DD DISP=OLD,DSN=USER.ISPF.ISPPROF               
+//SYSPRINT DD SYSOUT=*                                       
+//SYSTSPRT DD SYSOUT=*                                       
+//SYSTSIN  DD *                                               
+ ISPSTART CMD(%#REXX) 
